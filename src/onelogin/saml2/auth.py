@@ -57,6 +57,8 @@ class OneLogin_Saml2_Auth(object):
         self.__errors = []
         self.__error_reason = None
         self.__last_request_id = None
+        self.__last_request_xml = None
+        self.__last_response = None
 
     def get_settings(self):
         """
@@ -90,6 +92,7 @@ class OneLogin_Saml2_Auth(object):
         if 'post_data' in self.__request_data and 'SAMLResponse' in self.__request_data['post_data']:
             # AuthnResponse -- HTTP_POST Binding
             response = OneLogin_Saml2_Response(self.__settings, self.__request_data['post_data']['SAMLResponse'])
+            self.__last_response = response.get_document()
 
             if response.is_valid(self.__request_data, request_id):
                 self.__attributes = response.get_attributes()
@@ -290,6 +293,7 @@ class OneLogin_Saml2_Auth(object):
 
         saml_request = authn_request.get_request()
         parameters = {'SAMLRequest': saml_request}
+        self.__last_request_xml = authn_request.get_request_as_xml()
 
         if return_to is not None:
             parameters['RelayState'] = return_to
@@ -451,3 +455,9 @@ class OneLogin_Saml2_Auth(object):
 
         signature = dsig_ctx.signBinary(str(msg), sign_algorithm_transform)
         return b64encode(signature)
+
+    def get_last_response_xml(self):
+        return self.__last_response
+
+    def get_last_request_xml(self):
+        return self.__last_request_xml

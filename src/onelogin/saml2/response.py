@@ -75,8 +75,7 @@ class OneLogin_Saml2_Response(object):
                 raise Exception('Missing ID attribute on SAML Response')
 
             # Checks that the response only has one assertion
-            if not self.validate_num_assertions():
-                raise Exception('SAML Response must contain 1 assertion')
+            self.validate_num_assertions()
 
             # Checks that the response has the SUCCESS status
             self.check_status()
@@ -123,8 +122,7 @@ class OneLogin_Saml2_Response(object):
                     raise Exception('There is no AttributeStatement on the Response')
 
                 # Validates Assertion timestamps
-                if not self.validate_timestamps():
-                    raise Exception('Timing issues (please check your clock settings)')
+                self.validate_timestamps()
 
                 encrypted_attributes_nodes = self.__query_assertion('/saml:AttributeStatement/saml:EncryptedAttribute')
                 if encrypted_attributes_nodes:
@@ -149,7 +147,7 @@ class OneLogin_Saml2_Response(object):
                 issuers = self.get_issuers()
                 for issuer in issuers:
                     if issuer is None or issuer != idp_entity_id:
-                        raise Exception('Invalid issuer in the Assertion/Response')
+                        raise Exception('Invalid issuer "{}" in the Assertion/Response: expected "{}"'.format(issuer, idp_entity_id))
 
                 # Checks the session Expiration
                 session_expiration = self.get_session_not_on_or_after()
@@ -212,8 +210,7 @@ class OneLogin_Saml2_Response(object):
                         document_to_validate = self.decrypted_document
                     else:
                         document_to_validate = self.document
-                if not OneLogin_Saml2_Utils.validate_sign(document_to_validate, cert, fingerprint, fingerprintalg):
-                    raise Exception('Signature validation failed. SAML Response rejected')
+                OneLogin_Saml2_Utils.validate_sign(document_to_validate, cert, fingerprint, fingerprintalg):
             else:
                 raise Exception('No Signature found. SAML Response rejected')
 
@@ -386,7 +383,11 @@ class OneLogin_Saml2_Response(object):
         """
         encrypted_assertion_nodes = OneLogin_Saml2_Utils.query(self.document, '//saml:EncryptedAssertion')
         assertion_nodes = OneLogin_Saml2_Utils.query(self.document, '//saml:Assertion')
-        return (len(encrypted_assertion_nodes) + len(assertion_nodes)) == 1
+        num_assertions = len(encrypted_assertion_nodes) + len(assertion_nodes)
+        if num_assertions == 1:
+            return True
+        else:
+            raise Exception('Could not validate response: expected exactly one assertion; got {}'.format(num_assertions))
 
     def process_signed_elements(self):
         """
@@ -415,7 +416,7 @@ class OneLogin_Saml2_Response(object):
 
             id_value = sign_node.getparent().get('ID')
             if id_value in verified_ids:
-                raise Exception('Duplicated ID. SAML Response rejected')
+                raise Exception('Duplicated ID "{}". SAML Response rejected'.format(id_value))
             verified_ids.append(id_value)
 
             # Check that reference URI matches the parent ID and no duplicate References or IDs
@@ -448,9 +449,9 @@ class OneLogin_Saml2_Response(object):
             nb_attr = conditions_node.get('NotBefore')
             nooa_attr = conditions_node.get('NotOnOrAfter')
             if nb_attr and OneLogin_Saml2_Utils.parse_SAML_to_time(nb_attr) > OneLogin_Saml2_Utils.now() + OneLogin_Saml2_Constants.ALLOWED_CLOCK_DRIFT:
-                return False
+                raise Exception('Could not validate timestamp: response not valid before {}'.format(nb_attr))
             if nooa_attr and OneLogin_Saml2_Utils.parse_SAML_to_time(nooa_attr) + OneLogin_Saml2_Constants.ALLOWED_CLOCK_DRIFT <= OneLogin_Saml2_Utils.now():
-                return False
+                raise Exception('Could not validate timestamp: response expired at {}'.format(nooa_attr))
         return True
 
     def __query_assertion(self, xpath_expr):
@@ -549,3 +550,9 @@ class OneLogin_Saml2_Response(object):
         After executing a validation process, if it fails this method returns the cause
         """
         return self.__error
+
+    def get_document(self):
+        if self.encrypted:
+            return self.decrypted_document
+        else:
+            return self.document

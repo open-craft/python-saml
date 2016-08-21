@@ -142,6 +142,9 @@ class OneLogin_Saml2_Authn_Request(object):
             request = b64encode(self.__authn_request)
         return request
 
+    def get_request_as_xml(self):
+        return self.__authn_request
+
     def get_id(self):
         """
         Returns the AuthNRequest ID.

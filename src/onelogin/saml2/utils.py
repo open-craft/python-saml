@@ -125,10 +125,14 @@ class OneLogin_Saml2_Utils(object):
             if debug:
                 stderr.write('Errors validating the metadata')
                 stderr.write(':\n\n')
+                exception_text = 'Failed to validate metadata with errors: \n'
                 for error in xmlschema.error_log:
                     stderr.write('%s\n' % error.message)
 
-            return 'invalid_xml'
+            exception_text = 'Failed to validate metadata with errors: \n'
+            for error in xmlschema.error_log:
+                exception_text += 'Line {error.line}: {error.message}\n'.format(error=error)
+            raise Exception(exception_text)
 
         return parseString(etree.tostring(dom))
 

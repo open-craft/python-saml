@@ -989,7 +989,7 @@ class OneLogin_Saml2_Utils(object):
 
         if len(signature_nodes) > 0:
             for signature_node in signature_nodes:
-                OneLogin_Saml2_Utils.validate_node_sign(signature_node, elem, cert, fingerprint, fingerprintalg, validatecert, debug):
+                OneLogin_Saml2_Utils.validate_node_sign(signature_node, elem, cert, fingerprint, fingerprintalg, validatecert, debug)
             return True
         else:
             raise Exception('Expected at least one signature node; none found.')

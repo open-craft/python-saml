@@ -403,7 +403,15 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
         settings.set_strict(True)
         response_2 = OneLogin_Saml2_Response(settings, message)
         self.assertFalse(response_2.is_valid(request_data))
-        self.assertEqual('Invalid SAML Response. Not match the saml-schema-protocol-2.0.xsd', response_2.get_error())
+        self.assertEqual(
+            "Failed to validate metadata with errors: \n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:protocol}Response': The attribute 'IssueInstant' is required but missing.\n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:assertion}Assertion': The attribute 'Version' is required but missing.\n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:assertion}Assertion': The attribute 'ID' is required but missing.\n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:assertion}Assertion': The attribute 'IssueInstant' is required but missing.\n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:assertion}Assertion': Character content other than whitespace is not allowed because the content type is 'element-only'.\n"
+            "Line 1: Element '{urn:oasis:names:tc:SAML:2.0:assertion}Assertion': Missing child element(s). Expected is ( {urn:oasis:names:tc:SAML:2.0:assertion}Issuer ).\n",
+            response_2.get_error())
 
     def testValidateNumAssertions(self):
         """
@@ -416,7 +424,7 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
 
         xml_multi_assertion = self.file_contents(join(self.data_path, 'responses', 'invalids', 'multiple_assertions.xml.base64'))
         response_2 = OneLogin_Saml2_Response(settings, xml_multi_assertion)
-        self.assertFalse(response_2.validate_num_assertions())
+        self.assertRaises(Exception, response_2.validate_num_assertions)
 
     def testValidateTimestamps(self):
         """
@@ -433,15 +441,15 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
 
         xml_3 = self.file_contents(join(self.data_path, 'responses', 'expired_response.xml.base64'))
         response_3 = OneLogin_Saml2_Response(settings, xml_3)
-        self.assertFalse(response_3.validate_timestamps())
+        self.assertRaises(Exception, response_3.validate_timestamps)
 
         xml_4 = self.file_contents(join(self.data_path, 'responses', 'invalids', 'not_after_failed.xml.base64'))
         response_4 = OneLogin_Saml2_Response(settings, xml_4)
-        self.assertFalse(response_4.validate_timestamps())
+        self.assertRaises(Exception, response_4.validate_timestamps)
 
         xml_5 = self.file_contents(join(self.data_path, 'responses', 'invalids', 'not_before_failed.xml.base64'))
         response_5 = OneLogin_Saml2_Response(settings, xml_5)
-        self.assertFalse(response_5.validate_timestamps())
+        self.assertRaises(Exception, response_5.validate_timestamps)
 
     def testValidateVersion(self):
         """

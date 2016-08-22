@@ -125,7 +125,6 @@ class OneLogin_Saml2_Utils(object):
             if debug:
                 stderr.write('Errors validating the metadata')
                 stderr.write(':\n\n')
-                exception_text = 'Failed to validate metadata with errors: \n'
                 for error in xmlschema.error_log:
                     stderr.write('%s\n' % error.message)
 
@@ -790,7 +789,7 @@ class OneLogin_Saml2_Utils(object):
         :type sign_algorithm: string
         """
         if xml is None or xml == '':
-            raise Exception('Empty string supplied as input')
+            raise Exception('Adding signature failed: Empty string supplied as input')
         elif isinstance(xml, etree._Element):
             elem = xml
         elif isinstance(xml, Document):
@@ -812,7 +811,7 @@ class OneLogin_Saml2_Utils(object):
         elif isinstance(xml, basestring):
             elem = fromstring(str(xml))
         else:
-            raise Exception('Error parsing xml string')
+            raise Exception('Adding signature failed: Error parsing xml string')
 
         if debug:
             xmlsec.set_error_callback(print_xmlsec_errors)
@@ -915,7 +914,7 @@ class OneLogin_Saml2_Utils(object):
         elif isinstance(xml, basestring):
             elem = fromstring(str(xml))
         else:
-            raise Exception('Validating siganture failed: Error parsing xml string')
+            raise Exception('Validating signature failed: Error parsing xml string')
 
         if debug:
             xmlsec.set_error_callback(print_xmlsec_errors)
@@ -958,7 +957,7 @@ class OneLogin_Saml2_Utils(object):
         :type: bool
         """
         if xml is None or xml == '':
-            raise Exception('Empty string supplied as input')
+            raise Exception('Validating metadata failed: Empty string supplied as input')
         elif isinstance(xml, etree._Element):
             elem = xml
         elif isinstance(xml, Document):
@@ -975,7 +974,7 @@ class OneLogin_Saml2_Utils(object):
         elif isinstance(xml, basestring):
             elem = fromstring(str(xml))
         else:
-            raise Exception('Error parsing xml string')
+            raise Exception('Validating metadata failed: Error parsing xml string')
 
         if debug:
             xmlsec.set_error_callback(print_xmlsec_errors)
@@ -996,7 +995,7 @@ class OneLogin_Saml2_Utils(object):
                 OneLogin_Saml2_Utils.validate_node_sign(signature_node, elem, cert, fingerprint, fingerprintalg, validatecert, debug)
             return True
         else:
-            raise Exception('Expected at least one signature node; none found.')
+            raise Exception('Validating metadata failed: Expected at least one signature node; none found.')
 
     @staticmethod
     def validate_node_sign(signature_node, elem, cert=None, fingerprint=None, fingerprintalg='sha1', validatecert=False, debug=False):

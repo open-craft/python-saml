@@ -516,7 +516,7 @@ class OneLogin_Saml2_Settings_Test(unittest.TestCase):
         self.assertEqual(len(settings.validate_metadata(xml)), 0)
 
         xml_2 = '<xml>invalid</xml>'
-        self.assertIn('invalid_xml', settings.validate_metadata(xml_2))
+        self.assertRaises(Exception, settings.validate_metadata, xml_2)
 
         xml_3 = self.file_contents(join(self.data_path, 'metadata', 'entities_metadata.xml'))
         self.assertIn('noEntityDescriptor_xml', settings.validate_metadata(xml_3))
@@ -563,9 +563,8 @@ class OneLogin_Saml2_Settings_Test(unittest.TestCase):
         """
         settings = OneLogin_Saml2_Settings(self.loadSettingsJSON())
         metadata = self.file_contents(join(self.data_path, 'metadata', 'noentity_metadata_settings1.xml'))
-        errors = settings.validate_metadata(metadata)
         self.assertNotEqual(len(metadata), 0)
-        self.assertIn('invalid_xml', errors)
+        self.assertRaises(Exception, settings.validate_metadata, metadata)
 
     def testGetIdPData(self):
         """

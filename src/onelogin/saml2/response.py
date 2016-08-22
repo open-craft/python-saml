@@ -210,7 +210,7 @@ class OneLogin_Saml2_Response(object):
                         document_to_validate = self.decrypted_document
                     else:
                         document_to_validate = self.document
-                OneLogin_Saml2_Utils.validate_sign(document_to_validate, cert, fingerprint, fingerprintalg):
+                OneLogin_Saml2_Utils.validate_sign(document_to_validate, cert, fingerprint, fingerprintalg)
             else:
                 raise Exception('No Signature found. SAML Response rejected')
 

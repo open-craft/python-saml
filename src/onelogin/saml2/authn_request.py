@@ -143,6 +143,9 @@ class OneLogin_Saml2_Authn_Request(object):
         return request
 
     def get_request_as_xml(self):
+        """
+        Return the XML document that will be sent as part of the request
+        """
         return self.__authn_request
 
     def get_id(self):

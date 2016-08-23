@@ -552,6 +552,9 @@ class OneLogin_Saml2_Response(object):
         return self.__error
 
     def get_document(self):
+        """
+        If necessary, decrypt the XML response document, and return it.
+        """
         if self.encrypted:
             return self.decrypted_document
         else:

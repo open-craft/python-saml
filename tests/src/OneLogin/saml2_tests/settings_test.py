@@ -686,10 +686,10 @@ class OneLogin_Saml2_Settings_Test(unittest.TestCase):
 
         contacts = settings.get_contacts()
         self.assertNotEqual(len(contacts), 0)
-        self.assertEqual('technical_name', contacts['technical']['givenName'])
-        self.assertEqual('technical@example.com', contacts['technical']['emailAddress'])
-        self.assertEqual('support_name', contacts['support']['givenName'])
-        self.assertEqual('support@example.com', contacts['support']['emailAddress'])
+        self.assertEqual(u'Téçhnïçäl Nämé', contacts['technical']['givenName'])
+        self.assertEqual(u'technical@example.com', contacts['technical']['emailAddress'])
+        self.assertEqual(u'Süppört Nämé', contacts['support']['givenName'])
+        self.assertEqual(u'support@example.com', contacts['support']['emailAddress'])
 
     def testGetOrganization(self):
         """
@@ -699,9 +699,9 @@ class OneLogin_Saml2_Settings_Test(unittest.TestCase):
 
         organization = settings.get_organization()
         self.assertNotEqual(len(organization), 0)
-        self.assertEqual('sp_test', organization['en-US']['name'])
-        self.assertEqual('SP test', organization['en-US']['displayname'])
-        self.assertEqual('http://sp.example.com', organization['en-US']['url'])
+        self.assertEqual(u'sp_test', organization['en-US']['name'])
+        self.assertEqual(u'Sérvïçé prövïdér', organization['en-US']['displayname'])
+        self.assertEqual(u'http://sp.example.com', organization['en-US']['url'])
 
     def testSetStrict(self):
         """

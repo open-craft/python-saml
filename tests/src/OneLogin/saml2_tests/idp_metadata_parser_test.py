@@ -299,17 +299,17 @@ class OneLogin_Saml2_IdPMetadataParser_Test(unittest.TestCase):
         # Generate readable JSON representation:
         # print("%s" % json.dumps(settings_result, indent=2).replace(r'\n', r'\\n'))
 
-        expected_settings_json = """
+        expected_settings_json = u"""
         {
           "custom_base_path": "../../../tests/data/customPath/",
           "contactPerson": {
             "support": {
               "emailAddress": "support@example.com",
-              "givenName": "support_name"
+              "givenName": "Süppört Nämé"
             },
             "technical": {
               "emailAddress": "technical@example.com",
-              "givenName": "technical_name"
+              "givenName": "Téçhnïçäl Nämé"
             }
           },
           "idp": {
@@ -341,7 +341,7 @@ class OneLogin_Saml2_IdPMetadataParser_Test(unittest.TestCase):
           "debug": false,
           "organization": {
             "en-US": {
-              "displayname": "SP test",
+              "displayname": "Sérvïçé prövïdér",
               "url": "http://sp.example.com",
               "name": "sp_test"
             }
@@ -355,7 +355,7 @@ class OneLogin_Saml2_IdPMetadataParser_Test(unittest.TestCase):
         # Commute merge operation. As the order determines which settings
         # dictionary has priority, here we expect a different result.
         settings_result2 = OneLogin_Saml2_IdPMetadataParser.merge_settings(data, settings)
-        expected_settings2_json = """
+        expected_settings2_json = u"""
         {
           "debug": false,
           "idp": {
@@ -377,11 +377,11 @@ class OneLogin_Saml2_IdPMetadataParser_Test(unittest.TestCase):
           "contactPerson": {
             "technical": {
               "emailAddress": "technical@example.com",
-              "givenName": "technical_name"
+              "givenName": "Téçhnïçäl Nämé"
             },
             "support": {
               "emailAddress": "support@example.com",
-              "givenName": "support_name"
+              "givenName": "Süppört Nämé"
             }
           },
           "strict": false,
@@ -398,7 +398,7 @@ class OneLogin_Saml2_IdPMetadataParser_Test(unittest.TestCase):
           "custom_base_path": "../../../tests/data/customPath/",
           "organization": {
             "en-US": {
-              "displayname": "SP test",
+              "displayname": "Sérvïçé prövïdér",
               "url": "http://sp.example.com",
               "name": "sp_test"
             }

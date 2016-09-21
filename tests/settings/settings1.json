@@ -29,18 +29,18 @@
     },
     "contactPerson": {
         "technical": {
-            "givenName": "technical_name",
+            "givenName": "Téçhnïçäl Nämé",
             "emailAddress": "technical@example.com"
         },
         "support": {
-            "givenName": "support_name",
+            "givenName": "Süppört Nämé",
             "emailAddress": "support@example.com"
         }
     },
     "organization": {
         "en-US": {
             "name": "sp_test",
-            "displayname": "SP test",
+            "displayname": "Sérvïçé prövïdér",
             "url": "http://sp.example.com"
         }
     }

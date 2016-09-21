@@ -52,7 +52,7 @@ class OneLogin_Saml2_Authn_Request_Test(unittest.TestCase):
         decoded = b64decode(authn_request_encoded)
         inflated = decompress(decoded, -15)
         self.assertRegexpMatches(inflated, '^<samlp:AuthnRequest')
-        self.assertNotIn('ProviderName="SP test"', inflated)
+        self.assertNotIn('ProviderName="', inflated)
 
         saml_settings['organization'] = {}
         settings = OneLogin_Saml2_Settings(saml_settings)
@@ -62,7 +62,7 @@ class OneLogin_Saml2_Authn_Request_Test(unittest.TestCase):
         decoded = b64decode(authn_request_encoded)
         inflated = decompress(decoded, -15)
         self.assertRegexpMatches(inflated, '^<samlp:AuthnRequest')
-        self.assertNotIn('ProviderName="SP test"', inflated)
+        self.assertNotIn('ProviderName="', inflated)
 
     def testGetRequestXML(self):
         """
